@@ -23,11 +23,14 @@ var drawGraph = function(data,day)
 
 var margins =
 {
-top: 10,
-bottom: 10,
-left: 10,
-right:10
+top: 30,
+bottom: 30,
+left: 30,
+right:30
 };
+
+var bars = 10;
+
 var width = screen.width - margins.left - margins.right;
 var height = screen.height - margins.top - margins.bottom;
 
@@ -38,7 +41,7 @@ var xScale = d3.scaleLinear()
 
 var binMaker = d3.histogram()
             .domain(xScale.domain())
-            .thresholds(xScale.ticks(5)); //might need to change ticks
+            .thresholds(xScale.ticks(bars)); //might need to change ticks
 
 var newArray = data.map(function(d)
 {
@@ -47,14 +50,23 @@ var newArray = data.map(function(d)
 console.log(newArray)
 
 var bins = binMaker(newArray)
-window.alert(bins)
+console.log(bins)
+
+var max = d3.max(bins,function(d)
+{
+  return d.length
+})
+
+console.log(max)
+
+//window.alert(bins)
 //var percentage = function(d)
 //{
 //  return d.length/data.length
 //}
 
 var yScale = d3.scaleLinear()
-               .domain([0,23])
+               .domain([0,max])
                .range([height,0])
                .nice();
 
@@ -68,16 +80,26 @@ plot.selectAll("rect")
     .enter()
     .append("rect")
     .attr("x",function(d) {return xScale(d.x0);})
-    .attr("width",function(d){return xScale(d.x1-.1) - xScale(d.x0);})
+    .attr("width",width/bars)
     .attr("y",function(d) {return yScale(d.length)})
     .attr("height",function(d) {return height- yScale(d.length)})
+    .attr("stroke","white")
     //.attr("fill",function(d){return colors(d.homework);})
 
 var xAxis = d3.axisBottom()
               .scale(xScale)
-              .ticks(30);
+              .ticks(10);
 
 var yAxis = d3.axisLeft()
               .scale(yScale)
-              .ticks(50);
+              .ticks(max);
+
+svg.append("g")
+   .attr("id", "xAxis")
+   .call(xAxis)
+   .attr("transform","translate("+(margins.left+xScale(0.5))+","+(height+margins.top)+")");
+svg.append("g")
+   .call(yAxis)
+   .attr("transform","translate("+(margins.left+xScale(0.5))+","+margins.top+")");
+
 }
