@@ -2,7 +2,7 @@ var datahistogram = d3.json("data.json");
 
 datahistogram.then(function(data)
 {
-  drawGraph(data,1);
+  drawGraph(data,26);
 },
 function(err)
 {
@@ -29,13 +29,13 @@ left: 30,
 right:30
 };
 
-var bars = 10;
+var bars = 11;
 
 var width = screen.width - margins.left - margins.right;
 var height = screen.height - margins.top - margins.bottom;
 
 var xScale = d3.scaleLinear()
-            .domain([0,10])
+            .domain([0,11])
             .nice()
             .range([0.,width]);
 
@@ -70,10 +70,11 @@ var yScale = d3.scaleLinear()
                .range([height,0])
                .nice();
 
-var colors = d3.scaleOrdinal(d3.schemeSet3);
+var colors = d3.scaleOrdinal(d3.schemeYlGnBu[0,9]);
 
 var plot = svg.append("g")
                   .attr("transform","translate("+margins.left+","+margins.top+ ")");
+
 
 plot.selectAll("rect")
     .data(bins)
@@ -84,7 +85,35 @@ plot.selectAll("rect")
     .attr("y",function(d) {return yScale(d.length)})
     .attr("height",function(d) {return height- yScale(d.length)})
     .attr("stroke","white")
-    //.attr("fill",function(d){return colors(d.homework);})
+    .attr("fill",function(d){return colors(d);})
+    .on("mouseover", function(d,i) {
+       // console.log(d3.select(this).attr("x"))
+    					//Get this bar's x/y values, then augment for the tooltip
+    					var xPosition = parseFloat(d3.select(this).attr("x")) + width/bars / 2;
+    					var yPosition = parseFloat(d3.select(this).attr("y")) / 2 + height / 2;
+
+    					//Update the tooltip position and value
+    					d3.select("#tooltip")
+    						.style("left", xPosition + "px")
+    						.style("top", yPosition + "px")
+    						.select("#value")
+                .text(d.length)
+              d3.select("#tooltip")
+                .style("left", xPosition + "px")
+                .style("top", yPosition + "px")
+                .select("#grade")
+                .text(d[0])
+
+    					//Show the tooltip
+    					d3.select("#tooltip").classed("hidden", false);
+
+    			   })
+    .on("mouseout", function() {
+
+    					//Hide the tooltip
+    					d3.select("#tooltip").classed("hidden", true);
+
+            });
 
 var xAxis = d3.axisBottom()
               .scale(xScale)
@@ -97,9 +126,11 @@ var yAxis = d3.axisLeft()
 svg.append("g")
    .attr("id", "xAxis")
    .call(xAxis)
-   .attr("transform","translate("+(margins.left+xScale(0.5))+","+(height+margins.top)+")");
+   .attr("transform","translate("+(margins.left)+","+(height+margins.top)+")");
 svg.append("g")
    .call(yAxis)
-   .attr("transform","translate("+(margins.left+xScale(0.5))+","+margins.top+")");
+   .attr("transform","translate("+(margins.left)+","+margins.top+")");
+
+
 
 }
