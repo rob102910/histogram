@@ -102,7 +102,7 @@ plot.selectAll("rect")
   //  .data(bins)
     .attr("x",function(d) {return xScale(d.x0)+50;})
     .attr("width",width/bars)
-    .attr("y",function(d) {return yScale(d.length)+150})
+    .attr("y",function(d) {return yScale(d.length)+100})
     .attr("height",function(d) {return height- yScale(d.length)})
     .attr("stroke","white")
     .attr("fill",function(d){return colors(d);})
@@ -149,11 +149,11 @@ var yAxis = d3.axisLeft()
 d3.select("#graph").append("g")
    .attr("id", "xAxis")
    .call(xAxis)
-   .attr("transform","translate("+(margins.left+50)+","+(height+150+margins.top)+")");
+   .attr("transform","translate("+(margins.left+50)+","+(height+100+margins.top)+")");
 d3.select("#graph").append("g")
    .attr("id","yAxis")
    .call(yAxis)
-   .attr("transform","translate("+(margins.left+50)+","+(150+margins.top)+")");
+   .attr("transform","translate("+(margins.left+50)+","+(100+margins.top)+")");
 
 }
 
