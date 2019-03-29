@@ -46,7 +46,7 @@ var newplot = d3.select("svg")
       .attr("y",50)
       .on("mouseover",function(d){
       //  console.log(d.day)
-        d3.select(this).attr("fill","orange")
+        d3.select(this).attr("fill","#20639B")
           .attr("font-size","23px");
       })
       .on("mouseout",function(d){
