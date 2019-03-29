@@ -28,7 +28,7 @@ var colors = d3.scaleOrdinal(d3.schemeYlGnBu[0,9]);
 var changeGraph = function(data){
 var svg = d3.select("#day")
           .attr("width",screen.width+1000)
-          .attr("height",screen.height-450);
+          .attr("height",screen.height-400);
 var newplot = d3.select("svg")
                 .append("g")
                 .attr("class","days")
@@ -45,7 +45,7 @@ var newplot = d3.select("svg")
       })
       .attr("y",50)
       .on("mouseover",function(d){
-        console.log(d.day)
+      //  console.log(d.day)
         d3.select(this).attr("fill","orange")
           .attr("font-size","23px");
       })
@@ -66,7 +66,7 @@ var drawGraph = function(data,day)
 
 var svg = d3.select("#graph")
             .attr("width",screen.width+1000)
-            .attr("height",screen.height+1000);
+            .attr("height",screen.height+800);
 
 var binMaker = d3.histogram()
             .domain(xScale.domain())
@@ -102,7 +102,7 @@ plot.selectAll("rect")
   //  .data(bins)
     .attr("x",function(d) {return xScale(d.x0)+50;})
     .attr("width",width/bars)
-    .attr("y",function(d) {return yScale(d.length)+100})
+    .attr("y",function(d) {return yScale(d.length)+150})
     .attr("height",function(d) {return height- yScale(d.length)})
     .attr("stroke","white")
     .attr("fill",function(d){return colors(d);})
@@ -130,6 +130,14 @@ plot.selectAll("rect")
     					d3.select("#tooltip").classed("hidden", true);
             })
 
+d3.select("#graph").append("g")
+  .attr("id", "displayDay")
+  .append("text")
+  .attr("x",40)
+  .attr("y",40)
+  .text("Day 1")
+
+
 var xAxis = d3.axisBottom()
               .scale(xScale)
               .ticks(10);
@@ -141,11 +149,11 @@ var yAxis = d3.axisLeft()
 d3.select("#graph").append("g")
    .attr("id", "xAxis")
    .call(xAxis)
-   .attr("transform","translate("+(margins.left+50)+","+(height+100+margins.top)+")");
+   .attr("transform","translate("+(margins.left+50)+","+(height+150+margins.top)+")");
 d3.select("#graph").append("g")
    .attr("id","yAxis")
    .call(yAxis)
-   .attr("transform","translate("+(margins.left+50)+","+(100+margins.top)+")");
+   .attr("transform","translate("+(margins.left+50)+","+(150+margins.top)+")");
 
 }
 
@@ -176,6 +184,8 @@ var update = function(data,day){
     .selectAll("rect")
     .data(bins)
     .transition()
+    .ease(d3.easeBounce)
+    .duration(1000)
     .attr("x",function(d) {return xScale(d.x0)+50;})
     .attr("width",width/bars)
     .attr("y",function(d) {return yScale(d.length)+100})
@@ -190,12 +200,20 @@ var update = function(data,day){
                   .ticks(max);
 
     d3.select("#xAxis") //select the old axis and then make change
-       .attr("id", "xAxis")
        .call(xAxis)
-       .attr("transform","translate("+(margins.left+50)+","+(height+100+margins.top)+")");
+       .attr("transform","translate("+(margins.left+50)+","+(height+100+margins.top)+")")
+       .transition()
+       .duration(700);
     d3.select("#yAxis")
        .call(yAxis)
-       .attr("transform","translate("+(margins.left+50)+","+(100+margins.top)+")");
+       .attr("transform","translate("+(margins.left+50)+","+(100+margins.top)+")")
+       .transition()
+       .duration(700);
+
+    d3.select("#displayDay")
+      .selectAll("text")
+      .text("Day "+(data[1].quizes[day].day))
+    // console.log(data[1].quizes[1].day)
 }
 
 //call the initial function to draw day 1
